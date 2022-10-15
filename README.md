@@ -1,27 +1,35 @@
-# :fire: PNG Upscale -  AI Super Resolution :fire:
-> Small tool using pretrained models to upscale images
- 
- ## Download is available from the [Releases Page](https://github.com/Araxeus/PNG-Upscale/releases/latest) or [Google Drive](https://drive.google.com/drive/folders/1pMvzL5sqTRcJOhByU_Am5vU2oik_KHH2?usp=sharing) or [MediaFire](https://app.mediafire.com/nz88rdbl8u041)
-* Hosted Folder include full "[Models](https://github.com/Araxeus/PNG-Upscale/tree/main/Models)" folder 📁 and executable Files 🖼️ to download
+[![Release](https://jitpack.io/v/umjammer/vavi-image-filter-dnnsuperres.svg)](https://jitpack.io/#umjammer/vavi-image-filter-dnnsuperres)
+[![Java CI](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/maven.yml/badge.svg)](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/maven.yml)
+[![CodeQL](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/codeql-analysis.yml)
+![Java](https://img.shields.io/badge/Java-8-b07219)
 
-* `Windows 64bit` [[Exe]](https://github.com/Araxeus/PNG-Upscale/releases/download/v1.0/png-upscale-1.0_Windows64bit.exe) / [[Jar]](https://github.com/Araxeus/PNG-Upscale/releases/download/v1.0/png-upscale-1.0_Windows64bit.jar) 
-* `Linux 64bit` [[Jar]](https://github.com/Araxeus/PNG-Upscale/releases/download/v1.0/png-upscale-1.0_LINUX_64bit.jar) 
-* `macOS 64bit` [[Jar]](https://github.com/Araxeus/PNG-Upscale/releases/download/v1.0/png-upscale-1.0_macOS_64bit.jar)
-* :electron:	Download the executable corresponding with your operating system, and the Models folder
-* It's possible to download only some of the models if you want (It just wont let you use them inside the program)
-* The Models folder needs to be in the same directory as the Jar/Exe to use them
- ---
-* ⚠️ Be careful when trying to resize very large pictures, it can take considerable time and resources ⚠️
-* To upscale an image you just need to choose a mode, load a picture and press start
-* Save button <ins>*can*</ins> be used to choose an output folder and filename *before* you start the process (either just name or .png)
-* You can double click the text box to change [Dark <-> Light] theme (disabled when upScaling)
-* Use PNG images for best results
-* if faced with a JNI Error see this issue for a possible fix https://github.com/Araxeus/PNG-Upscale/issues/33
- ---
+# vavi-image-filter-dnnsuperres
+
+<img src="https://raw.githubusercontent.com/wiki/opencv/opencv/logo/OpenCV_logo_black.svg?sanitize=true" />
+
+[BufferedImageOp](https://docs.oracle.com/javase/8/docs/api/java/awt/image/BufferedImageOp.html)
+using pretrained models to OpenCV's DNNSuperRes
+
+this is a fork of https://github.com/Araxeus/PNG-Upscale
+
+## Install
+
+https://jitpack.io/#umjammer/vavi-image-filter-dnnsuperres
+
+```shell
+ $ mvn -P lwjgl-natives-macos-amd64 -Djavacpp.platform=macosx-x86_64 install
+```
+
+## Usage
+
+```java
+    DNNSuperResolutionOp filter = new DNNSuperResolutionOp(DNNSuperResolutionOp.MODES[0]);
+    BufferedImage image = ImageIO.read(Files.newInputStream(in));
+    BufferedImage filteredImage = filter.filter(image, null);
+    ImageIO.write(filteredImage, "PNG", Files.newOutputStream(out));
+```
 
 ## Models
-
->`all of the model download links below are already included in the MediaFire folder.`
 
 There are four trained models integrated into the program :
 
@@ -81,9 +89,7 @@ There are four trained models integrated into the program :
 
 > Trained models can be downloaded from [here](https://github.com/fannymonori/TF-LapSRN/tree/master/export).
 
- ---
-
-### Benchmarks
+## Benchmarks
 
 Comparing different algorithms. Scale x4 on monarch.png
 
@@ -97,38 +103,8 @@ Comparing different algorithms. Scale x4 on monarch.png
 | Nearest neighbor |**0.00014** |23.5628  |0.81741  |
 | Lanczos          |0.00101  |25.9115  |0.87057  |
 
- ---
- 
-### As a Demo this image was resized from 256x256 to 85x85, and then upscaled using this program
+## References
 
-![Original](https://github.com/Araxeus/PNG-Upscale/blob/main/test/original.png)
-
-
-## x2 Demo (85x85 -> 170x170)
-
-|      Original             |  Bicubic Interpolation    |        EDSR               |
-| ------------------------- |------------------------- |------------------------- |
-![Original](https://github.com/Araxeus/PNG-Upscale/blob/main/test/x2/original.png)   |  ![Bicubic](https://github.com/Araxeus/PNG-Upscale/blob/main/test/x2/input(BicubicX2).png) |  ![EDSR](https://github.com/Araxeus/PNG-Upscale/blob/main/test/x2/input(EDSRx2).png) |
-
-|         ESPCN             |       FSRCNN              |        LapSRN             |
-| ------------------------- | ------------------------- | ------------------------- |
-![ESPCN](https://github.com/Araxeus/PNG-Upscale/blob/main/test/x2/input(ESPCNx2).png) | ![FSRCNN](https://github.com/Araxeus/PNG-Upscale/blob/main/test/x2/input(FSRCNNx2).png) |  ![LapSRN](https://github.com/Araxeus/PNG-Upscale/blob/main/test/x2/input(LapSRNx2).png) |
-
-> Bicubic Interpolation is the standart resizing technique used by most editing tools like photoship etc..
-
-
-## x4 Demo (85x85 -> 340x340)
-
-|      Original             |  Bicubic Interpolation    |        EDSR               |
-| ------------------------- | ------------------------- | ------------------------- |
-![Original](https://github.com/Araxeus/PNG-Upscale/blob/main/test/x4/original.png)   |  ![Bicubic](https://github.com/Araxeus/PNG-Upscale/blob/main/test/x4/input(BicubicX4).png)|  ![EDSR](https://github.com/Araxeus/PNG-Upscale/blob/main/test/x4/input(EDSRx4).png)|
-
- 
-|        ESPCN             |       FSRCNN              |        LapSRN             |
-| ------------------------- | ------------------------- | ------------------------- |
-![ESPCN](https://github.com/Araxeus/PNG-Upscale/blob/main/test/x4/input(ESPCNx4).png)   |  ![FSRCNN](https://github.com/Araxeus/PNG-Upscale/blob/main/test/x4/input(FSRCNNx4).png)|  ![LapSRN](https://github.com/Araxeus/PNG-Upscale/blob/main/test/x4/input(LapSRNx4).png)|
-
-### References
 [1] Bee Lim, Sanghyun Son, Heewon Kim, Seungjun Nah, and Kyoung Mu Lee, **"Enhanced Deep Residual Networks for Single Image Super-Resolution"**, <i> 2nd NTIRE: New Trends in Image Restoration and Enhancement workshop and challenge on image super-resolution in conjunction with **CVPR 2017**. </i> [[PDF](http://openaccess.thecvf.com/content_cvpr_2017_workshops/w12/papers/Lim_Enhanced_Deep_Residual_CVPR_2017_paper.pdf)] [[arXiv](https://arxiv.org/abs/1707.02921)] [[Slide](https://cv.snu.ac.kr/research/EDSR/Presentation_v3(release).pptx)]
 
 [2] Shi, W., Caballero, J., Huszár, F., Totz, J., Aitken, A., Bishop, R., Rueckert, D. and Wang, Z., **"Real-Time Single Image and Video Super-Resolution Using an Efficient Sub-Pixel Convolutional Neural Network"**, <i>Proceedings of the IEEE conference on computer vision and pattern recognition</i> **CVPR 2016**. [[PDF](http://openaccess.thecvf.com/content_cvpr_2016/papers/Shi_Real-Time_Single_Image_CVPR_2016_paper.pdf)] [[arXiv](https://arxiv.org/abs/1609.05158)]
