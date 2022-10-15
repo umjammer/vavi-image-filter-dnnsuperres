@@ -32,7 +32,7 @@ public class Test1 {
     @Test
     void test() throws Exception {
 
-        Path in = Paths.get("/Volumes/GoogleDrive/My Drive/Pictures/heroku-blog-duke.png");
+        Path in = Paths.get("src/test/resources/samples/input.png");
         String fn = in.getFileName().toString();
         String base = fn.substring(0, fn.lastIndexOf('.'));
         String ext = fn.substring(fn.lastIndexOf('.'));
