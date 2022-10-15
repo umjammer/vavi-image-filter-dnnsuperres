@@ -2,7 +2,6 @@
 # Standard Maven .gitignore
 #
 target/
-src/test
 resources/.ignore
 pom.xml.tag
 pom.xml.releaseBackup
