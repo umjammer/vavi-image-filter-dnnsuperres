@@ -1,3 +1,7 @@
+/*
+ * https://github.com/Araxeus/PNG-Upscale
+ */
+
 package com.github.araxeus.dnnsuperres;
 
 import java.awt.Rectangle;
@@ -37,6 +41,14 @@ import static org.bytedeco.opencv.global.opencv_imgcodecs.imdecode;
 import static org.bytedeco.opencv.global.opencv_imgcodecs.imencode;
 
 
+/**
+ * DNNSuperResolutionOp.
+ * <p>
+ * The OpenCV DnnSuperResImpl wrapper as a Java2D BufferedImageOp.
+ *
+ * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
+ * @version 0.00 2022/10/14 nsano initial version <br>
+ */
 @SuppressWarnings({"java:S106", "java:S2093"})
 public class DNNSuperResolutionOp implements BufferedImageOp {
 
