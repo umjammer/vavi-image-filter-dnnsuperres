@@ -34,8 +34,9 @@ https://jitpack.io/#umjammer/vavi-image-filter-dnnsuperres
  * quality
    * models this project provided ... 
      * [sample image](src/test/resources/samples/input.png) makes good result, but others...
-     * otoh [OpenML](https://github.com/umjammer/rococoa/blob/0.8.5/rococoa-contrib/src/test/java/org/rococoa/cocoa/coreml/CoreMLTest.java)
+     * otoh [CoreML](https://github.com/umjammer/rococoa/blob/0.8.5/rococoa-contrib/src/test/java/org/rococoa/cocoa/coreml/CoreMLTest.java)
      `REAL-ESRGAN` creates significant result (color is somehow different...)
    * https://github.com/umjammer/vavi-image-filter-ml/blob/main/src/test/resources/namacha.jpg ... i couldn't see differences
    * https://qiita.com/gomamitu/items/b4722741f6318d734bce ... i think there is no differences (magnifying is needed lol)
+   * https://meknowledge.jpn.org/2021/05/28/python-super-resolution/ ... same impression
  * `Dnn#readNetFromTensorflow()`
