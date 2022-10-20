@@ -115,15 +115,29 @@ public class DNNSuperResolutionOp implements BufferedImageOp {
     static {
 
         try {
+            // temporary directory
             Path modelDir = Files.createTempDirectory(DNNSuperResolutionOp.class.getName());
 
             AtomicBoolean used = new AtomicBoolean();
 
+//ResourceList.getResources(Pattern.compile(".*")).forEach(logger::finer);
+            // resources in "jar"
             Collection<String> models = ResourceList.getResources(Pattern.compile("Models/.*\\.pb"));
 logger.fine("models: " + models.size());
+            // TODO resources in "jar in jar" (means in mac .app)
+//            if (models.size() == 0) {
+//                models = ResourceList.getResources(Pattern.compile(".*/vavi-image-filter-dnnsuperres.*\\.jar"));
+//                if (models.size() >= 1) {
+//                    List<String> modelsInJar = new ArrayList<>();
+//                    ZipFile zip = new ZipFile(Paths.get(URI.create(models.iterator().next())).toFile());
+//                } else {
+//logger.severe("no files and jar");
+//                }
+//            }
             models.forEach(url -> {
 logger.finer(url);
-                if (!url.startsWith("file:")) {
+                if (!url.startsWith("file:")) { // means "jar://...\\.jar!foo/bar..."
+                    // resources in "jar"
                     String inJarFile = url.substring(url.lastIndexOf('!') + 1);
 logger.finer("injar: " + inJarFile);
                     Path out = modelDir.resolve(inJarFile);
@@ -151,14 +165,17 @@ logger.finer("create: " + out);
             });
 
             if (used.get()) {
+                // run on another project: resources as in jar resources
                 DNNSuperResolutionOp.modelDir = modelDir;
             } else {
+                // run on this project (i.e. on ide): resources as files
                 DNNSuperResolutionOp.modelDir = Paths.get("src/main/resources");
             }
 logger.fine("modelDir: " + DNNSuperResolutionOp.modelDir);
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 logger.info("shutdownHook");
+                // remove temporary directory
                 try (Stream<Path> s = Files.walk(modelDir)) {
                     s.sorted(Comparator.reverseOrder())
                         .map(Path::toFile)

@@ -40,3 +40,7 @@ https://jitpack.io/#umjammer/vavi-image-filter-dnnsuperres
    * https://qiita.com/gomamitu/items/b4722741f6318d734bce ... i think there is no differences (magnifying is needed lol)
    * https://meknowledge.jpn.org/2021/05/28/python-super-resolution/ ... same impression
  * `Dnn#readNetFromTensorflow()`
+ * resources in "jar in jar" for mac .app
+   * dnnsuperres error in mac.app
+   * because not "resources in jar (we can see those as individual files)" but "resources in a resource jar (we can see the jar only)"
+     * -> need to extract
