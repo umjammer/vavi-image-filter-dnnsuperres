@@ -33,6 +33,7 @@ public class Test1 {
     void test() throws Exception {
 
         Path in = Paths.get("src/test/resources/samples/input.png");
+//        Path in = Paths.get("/Users/nsano/src/vavi/vavi-image-dlfilter/tmp/v01_031.jpg");
         String fn = in.getFileName().toString();
         String base = fn.substring(0, fn.lastIndexOf('.'));
         String ext = fn.substring(fn.lastIndexOf('.'));
