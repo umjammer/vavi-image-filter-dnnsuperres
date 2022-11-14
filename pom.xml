@@ -24,6 +24,13 @@
     <profile><id>lwjgl-natives-windows-x86</id><activation><os><family>windows</family><arch>x86</arch></os></activation><properties><lwjgl.natives>natives-windows-x86</lwjgl.natives></properties></profile>
   </profiles>
 
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <url>https://maven.pkg.github.com/umjammer/vavi-image-filter-dnnsuperres</url>
+    </repository>
+  </distributionManagement>
+
   <build>
     <plugins>
       <plugin>

@@ -1,4 +1,4 @@
-[![Release](https://jitpack.io/v/umjammer/vavi-image-filter-dnnsuperres.svg)](https://jitpack.io/#umjammer/vavi-image-filter-dnnsuperres)
+[![Maven Package](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/maven-publish.yml)
 [![Java CI](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/maven.yml/badge.svg)](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/maven.yml)
 [![CodeQL](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/codeql-analysis.yml)
 ![Java](https://img.shields.io/badge/Java-8-b07219)
@@ -14,7 +14,9 @@ this is a fork of https://github.com/Araxeus/PNG-Upscale
 
 ## Install
 
-https://jitpack.io/#umjammer/vavi-image-filter-dnnsuperres
+* https://github.com/umjammer/vavi-image-filter-dnnsuperres/packages
+* this project uses github packages. add a personal access token to `~/.m2/settings.xml`
+* see https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry
 
 ```shell
  $ mvn -P lwjgl-natives-macos-amd64 -Djavacpp.platform=macosx-x86_64 install
