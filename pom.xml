@@ -6,7 +6,7 @@
 
   <groupId>vavi</groupId>
   <artifactId>vavi-image-filter-dnnsuperres</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.1</version>
 
   <properties>
     <lwjgl.version>3.2.3</lwjgl.version>
