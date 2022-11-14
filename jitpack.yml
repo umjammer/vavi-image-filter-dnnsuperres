@@ -1,0 +1,2 @@
+install:
+  mvn -B -P lwjgl-natives-macos-amd64 -Djavacpp.platform=macosx-x86_64 install --file pom.xml -Dmaven.javadoc.skip=true -DskipTests
