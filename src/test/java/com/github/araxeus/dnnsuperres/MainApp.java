@@ -1,13 +1,42 @@
-package core;
+package com.github.araxeus.dnnsuperres;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Toolkit;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.Enumeration;
+import java.util.NoSuchElementException;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
+import java.util.prefs.Preferences;
+import javax.imageio.ImageIO;
+import javax.swing.AbstractButton;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -15,66 +44,22 @@ import javax.swing.text.StyledDocument;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.google.common.base.Stopwatch;
-
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.util.nfd.NativeFileDialog;
+import org.rococoa.Foundation;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
-import javax.swing.AbstractButton;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JSplitPane;
-import java.awt.BorderLayout;
-import javax.swing.JTextPane;
-import javax.swing.JRadioButton;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
-import javax.swing.JSeparator;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-
-import java.awt.Dimension;
-
-import javax.swing.JButton;
-
-import java.awt.Toolkit;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.util.Enumeration;
-import java.util.concurrent.TimeUnit;
 
 public class MainApp {
-    //[0]=Button Name, [1]=Algorithm, [2]=Scale
-    private static final String ES = "espcn",
-                                ED = "edsr",
-                                FS = "fsrcnn",
-                                LA = "lapsrn";
-    private static final String[][] MODES = { 
-        {"ESPCNx2", ES, "2"}, // 0
-        {"ESPCNx3", ES, "3"}, // 1
-        {"ESPCNx4", ES, "4"}, // 2
-        {"EDSRx2", ED, "2"}, // 3
-        {"EDSRx3", ED,  "3"}, // 4
-        {"EDSRx4", ED,  "4"}, // 5
-        {"FSRCNNx2", FS, "2"}, // 6
-        {"FSRCNNx3", FS, "3"}, // 7
-        {"FSRCNNx4", FS, "4"}, // 8
-        {"LapSRNx2", LA, "2"}, // 9
-        {"LapSRNx4", LA, "4"}, // 10
-        {"LapSRNx8", LA, "8"} // 11
-    };
+
+    Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
+
+    private static final Logger logger = Logger.getLogger(MainApp.class.getName());
+
     public static final Color SVGBLUE = new Color(115, 208, 244),
-	                          SCARLET = new Color(255, 36, 0),
-                              LIGHT = new Color(194,236,255),
-                              DARK = new Color(17,19,19);
+            SCARLET = new Color(255, 36, 0),
+            LIGHT = new Color(194, 236, 255),
+            DARK = new Color(17, 19, 19);
     private JFrame frame;
     private JSplitPane upperSplitPane;
     private JTextPane console;
@@ -83,41 +68,51 @@ public class MainApp {
     private ButtonGroup mode;
 
     private JButton startButton,
-                    loadButton,
-                    saveButton;
+            loadButton,
+            saveButton;
     private JRadioButton btnLapSRNx8;
-    private final Icon whiteLoadingGIF, 
-                       blackLoadingGIF;
-    
+    private final Icon whiteLoadingGIF,
+            blackLoadingGIF;
+
     private FlatSVGIcon startSVG,
-                        loadSVG,
-                        loadOkSVG,
-                        saveSVG,
-                        saveOkSVG;
+            loadSVG,
+            loadOkSVG,
+            saveSVG,
+            saveOkSVG;
 
     private MouseAdapter skinChanger;
 
     private String loadPath,
-                   savePath;
+            savePath;
 
     private long clickTimer = 0;
 
-
-    private static MainApp window;
-
-    public String[] getPath () {
-        return new String[]{loadPath, savePath};
-    }
-
     /**
      * Launch the application.
-     * 
+     *
      * @wbp.parser.entryPoint
      */
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
-                window = new MainApp();
+                MainApp window = new MainApp();
+
+                logger.addHandler(new MyLogHandler((l, m) -> {
+                    switch (l.intValue()) {
+                    default:
+                    case 500:
+                        window.write(m, null);
+                        break;
+                    case 800:
+                        window.write(m, MainApp.SVGBLUE);
+                        break;
+                    case 900:
+                    case 1000:
+                        window.write(m, MainApp.SCARLET);
+                        break;
+                    }
+                }));
+
                 window.setSelected();
                 window.startTabbedPanel();
                 window.frame.setVisible(true);
@@ -128,7 +123,7 @@ public class MainApp {
         });
     }
 
-    public MainApp () {
+    public MainApp() {
         JFrame.setDefaultLookAndFeelDecorated(true); //custom window decoration
         setSkin(false);
         UIManager.put("TabbedPane.showTabSeparators", true);
@@ -137,7 +132,7 @@ public class MainApp {
         initialize();
     }
 
-    private void initialize () {
+    private void initialize() {
         frame = new JFrame();
         frame.setIconImage((new ImageIcon(MainApp.class.getClassLoader().getResource("Icon.png")).getImage()));
         frame.setAutoRequestFocus(true);
@@ -147,7 +142,7 @@ public class MainApp {
         //set default appearance to middle of the screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation((screenSize.width - frame.getBounds().width) / 2,
-            (screenSize.height - frame.getBounds().height) / 2);
+                (screenSize.height - frame.getBounds().height) / 2);
 
         mode = new ButtonGroup();
 
@@ -163,7 +158,7 @@ public class MainApp {
         console.setMinimumSize(new Dimension(150, 100));
         skinChanger = new MouseAdapter() {
             @Override
-            public void mousePressed (MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
                 if (clickTimer == 0) {
                     clickTimer = System.currentTimeMillis();
                     return;
@@ -204,7 +199,7 @@ public class MainApp {
         ESPCNpanel.add(separator);
 
         JRadioButton btnESPCNx2 = new JRadioButton("x2");
-        btnESPCNx2.setActionCommand(MODES[0][0]);
+        btnESPCNx2.setActionCommand(DNNSuperResolutionOp.MODES[0].toString());
         mode.add(btnESPCNx2);
         btnESPCNx2.setToolTipText("x2");
         ESPCNpanel.add(btnESPCNx2);
@@ -214,7 +209,7 @@ public class MainApp {
         ESPCNpanel.add(s1);
 
         JRadioButton btnESPCNx3 = new JRadioButton("x3");
-        btnESPCNx3.setActionCommand(MODES[1][0]);
+        btnESPCNx3.setActionCommand(DNNSuperResolutionOp.MODES[1].toString());
         mode.add(btnESPCNx3);
         btnESPCNx3.setToolTipText("x3");
         ESPCNpanel.add(btnESPCNx3);
@@ -224,7 +219,7 @@ public class MainApp {
         ESPCNpanel.add(s2);
 
         JRadioButton btnESPCNx4 = new JRadioButton("x4");
-        btnESPCNx4.setActionCommand(MODES[2][0]);
+        btnESPCNx4.setActionCommand(DNNSuperResolutionOp.MODES[2].toString());
         mode.add(btnESPCNx4);
         btnESPCNx4.setToolTipText("x4");
         ESPCNpanel.add(btnESPCNx4);
@@ -241,7 +236,7 @@ public class MainApp {
         EDSRpanel.add(s4);
 
         JRadioButton btnEDSRx2 = new JRadioButton("x2");
-        btnEDSRx2.setActionCommand(MODES[3][0]);
+        btnEDSRx2.setActionCommand(DNNSuperResolutionOp.MODES[3].toString());
         mode.add(btnEDSRx2);
         btnEDSRx2.setToolTipText("x2");
         btnEDSRx2.setHorizontalAlignment(SwingConstants.CENTER);
@@ -251,7 +246,7 @@ public class MainApp {
         EDSRpanel.add(s5);
 
         JRadioButton btnEDSRx3 = new JRadioButton("x3");
-        btnEDSRx3.setActionCommand(MODES[4][0]);
+        btnEDSRx3.setActionCommand(DNNSuperResolutionOp.MODES[4].toString());
         mode.add(btnEDSRx3);
         btnEDSRx3.setToolTipText("x3");
         btnEDSRx3.setHorizontalAlignment(SwingConstants.CENTER);
@@ -261,7 +256,7 @@ public class MainApp {
         EDSRpanel.add(s6);
 
         JRadioButton btnEDSRx4 = new JRadioButton("x4");
-        btnEDSRx4.setActionCommand(MODES[5][0]);
+        btnEDSRx4.setActionCommand(DNNSuperResolutionOp.MODES[5].toString());
         mode.add(btnEDSRx4);
         btnEDSRx4.setToolTipText("x4");
         btnEDSRx4.setHorizontalAlignment(SwingConstants.CENTER);
@@ -278,7 +273,7 @@ public class MainApp {
         FSRCNNpanel.add(s8);
 
         JRadioButton btnFSRCNNx2 = new JRadioButton("x2");
-        btnFSRCNNx2.setActionCommand(MODES[6][0]);
+        btnFSRCNNx2.setActionCommand(DNNSuperResolutionOp.MODES[6].toString());
         mode.add(btnFSRCNNx2);
         btnFSRCNNx2.setToolTipText("x2");
         btnFSRCNNx2.setHorizontalAlignment(SwingConstants.CENTER);
@@ -288,7 +283,7 @@ public class MainApp {
         FSRCNNpanel.add(s9);
 
         JRadioButton btnFSRCNNx3 = new JRadioButton("x3");
-        btnFSRCNNx3.setActionCommand(MODES[7][0]);
+        btnFSRCNNx3.setActionCommand(DNNSuperResolutionOp.MODES[7].toString());
         mode.add(btnFSRCNNx3);
         btnFSRCNNx3.setToolTipText("x3");
         btnFSRCNNx3.setHorizontalAlignment(SwingConstants.CENTER);
@@ -298,7 +293,7 @@ public class MainApp {
         FSRCNNpanel.add(s10);
 
         JRadioButton btnFSRCNNx4 = new JRadioButton("x4");
-        btnFSRCNNx4.setActionCommand(MODES[8][0]);
+        btnFSRCNNx4.setActionCommand(DNNSuperResolutionOp.MODES[8].toString());
         mode.add(btnFSRCNNx4);
         btnFSRCNNx4.setVerticalAlignment(SwingConstants.TOP);
         btnFSRCNNx4.setToolTipText("x4");
@@ -316,7 +311,7 @@ public class MainApp {
         LapSRNpanel.add(s12);
 
         JRadioButton btnLapSRNx2 = new JRadioButton("x2");
-        btnLapSRNx2.setActionCommand(MODES[9][0]);
+        btnLapSRNx2.setActionCommand(DNNSuperResolutionOp.MODES[9].toString());
         mode.add(btnLapSRNx2);
         btnLapSRNx2.setToolTipText("x2");
         btnLapSRNx2.setHorizontalAlignment(SwingConstants.CENTER);
@@ -326,7 +321,7 @@ public class MainApp {
         LapSRNpanel.add(s13);
 
         JRadioButton btnLapSRNx4 = new JRadioButton("x4");
-        btnLapSRNx4.setActionCommand(MODES[10][0]);
+        btnLapSRNx4.setActionCommand(DNNSuperResolutionOp.MODES[10].toString());
         mode.add(btnLapSRNx4);
         btnLapSRNx4.setToolTipText("x4");
         btnLapSRNx4.setHorizontalAlignment(SwingConstants.CENTER);
@@ -336,7 +331,7 @@ public class MainApp {
         LapSRNpanel.add(s14);
 
         btnLapSRNx8 = new JRadioButton("x8");
-        btnLapSRNx8.setActionCommand(MODES[11][0]);
+        btnLapSRNx8.setActionCommand(DNNSuperResolutionOp.MODES[11].toString());
         mode.add(btnLapSRNx8);
         btnLapSRNx8.setVerticalAlignment(SwingConstants.TOP);
         btnLapSRNx8.setToolTipText("x8");
@@ -355,7 +350,7 @@ public class MainApp {
         startButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         startButton.setHorizontalTextPosition(SwingConstants.CENTER);
         startButton.addActionListener(e -> {
-            if (loadPath != null) 
+            if (loadPath != null)
                 createWorker().execute();
             else
                 write("Load File First !", SCARLET);
@@ -397,7 +392,7 @@ public class MainApp {
         mainSplitPane.setDividerLocation(0.47);
     }
 
-    public void setMode (boolean mode) {
+    public void setMode(boolean mode) {
         enableComponents(upperSplitPane, mode);
         if (mode) {
             startButton.setIcon(startSVG);
@@ -410,11 +405,10 @@ public class MainApp {
         startButton.setText(null);
         enableComponents(upperSplitPane, false);
         console.removeMouseListener(skinChanger);
-        if (Config.FIELD03.getBoolean()) {
+        if (prefs.getBoolean("Dark Mode", true)) {
             startButton.setIcon(blackLoadingGIF);
             startButton.setDisabledIcon(blackLoadingGIF);
-        }
-        else {
+        } else {
             startButton.setIcon(whiteLoadingGIF);
             startButton.setDisabledIcon(whiteLoadingGIF);
         }
@@ -422,55 +416,98 @@ public class MainApp {
 
     private Stopwatch stopwatch;
 
+    boolean isMac() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        return osName.contains("mac");
+    }
+
     private ActionListener saveListener = event -> {
-        PointerBuffer path = MemoryUtil.memAllocPointer(1);
-        String openPath = loadPath!=null ? loadPath : Config.FIELD01.getString();
-    	switch (NativeFileDialog.NFD_SaveDialog("png",openPath, path)) {
-    		case NativeFileDialog.NFD_OKAY:
-    			savePath = path.getStringUTF8(0);
-                if (!savePath.endsWith(".png"))
-                    savePath+=".png";
-    			write("Saving to "+savePath,null);
-    			NativeFileDialog.nNFD_Free(path.get(0));
-                saveButton.setIcon(saveOkSVG);
-    			break;
-    		case NativeFileDialog.NFD_CANCEL:
-    			write("Canceled Save Location Selection",null);
-    			break;
-    		default: // NFD_ERROR
-    			write("Error: %s%n"+NativeFileDialog.NFD_GetError(),SCARLET);
+        // https://hub.jmonkeyengine.org/t/macos-nswindow-drag-regions-should-only-be-invalidated-on-the-main-thread/43523/2
+        if (isMac()) {
+            Foundation.runOnMainThread(this::save);
+        } else {
+            save();
         }
     };
-    
-    private ActionListener loadListener = event -> {
+
+    void save() {
         PointerBuffer path = MemoryUtil.memAllocPointer(1);
-    	switch (NativeFileDialog.NFD_OpenDialog("png",Config.FIELD01.getString(), path)) {
-    		case NativeFileDialog.NFD_OKAY:
-    			loadPath = path.getStringUTF8(0);
-                Config.FIELD01.setValue(new File(loadPath).getParent());
-    			write("Loaded "+loadPath,null);
-    			NativeFileDialog.nNFD_Free(path.get(0));
-                loadButton.setIcon(loadOkSVG);
-    			break;
-    		case NativeFileDialog.NFD_CANCEL:
-    			write("Canceled Image Selection",null);
-    			break;
-    		default: // NFD_ERROR
-    			write("Error: %s%n"+NativeFileDialog.NFD_GetError(),SCARLET);
-    	}
+        String openPath = loadPath != null ? loadPath : prefs.get("Selected Directory", System.getProperty("user.home"));
+        switch (NativeFileDialog.NFD_SaveDialog("png", openPath, path)) {
+        case NativeFileDialog.NFD_OKAY:
+            savePath = path.getStringUTF8(0);
+            if (!savePath.endsWith(".png"))
+                savePath += ".png";
+            write("Saving to " + savePath, null);
+            NativeFileDialog.nNFD_Free(path.get(0));
+            saveButton.setIcon(saveOkSVG);
+            break;
+        case NativeFileDialog.NFD_CANCEL:
+            write("Canceled Save Location Selection", null);
+            break;
+        default: // NFD_ERROR
+            write("Error: %s%n" + NativeFileDialog.NFD_GetError(), SCARLET);
+        }
+    }
+
+    private ActionListener loadListener = event -> {
+        // https://hub.jmonkeyengine.org/t/macos-nswindow-drag-regions-should-only-be-invalidated-on-the-main-thread/43523/2
+        if (isMac()) {
+            Foundation.runOnMainThread(this::load);
+        } else {
+            load();
+        }
     };
 
-    public SwingWorker<Boolean, Integer> createWorker () {
+    void load() {
+        PointerBuffer path = MemoryUtil.memAllocPointer(1);
+        switch (NativeFileDialog.NFD_OpenDialog("png", prefs.get("Selected Directory", System.getProperty("user.home")), path)) {
+        case NativeFileDialog.NFD_OKAY:
+            loadPath = path.getStringUTF8(0);
+            prefs.put("Selected Directory", new File(loadPath).getParent());
+            write("Loaded " + loadPath, null);
+            NativeFileDialog.nNFD_Free(path.get(0));
+            loadButton.setIcon(loadOkSVG);
+            break;
+        case NativeFileDialog.NFD_CANCEL:
+            write("Canceled Image Selection", null);
+            break;
+        default: // NFD_ERROR
+            write("Error: %s%n" + NativeFileDialog.NFD_GetError(), SCARLET);
+        }
+    }
+
+    public SwingWorker<Boolean, Integer> createWorker() {
         return new SwingWorker<Boolean, Integer>() {
             @Override
             protected Boolean doInBackground() throws Exception {
                 setMode(false);
                 stopwatch = Stopwatch.createStarted();
-                return Upscale.run(loadPath, savePath);
-            }       
+                DNNSuperResolutionOp DNNSuperResolutionOp = new DNNSuperResolutionOp(getMode());
+                DNNSuperResolutionOp.setLogger(logger);
+                try {
+                    logger.fine("Loading Image: " + loadPath);
+                    BufferedImage image = ImageIO.read(new File(loadPath));
+
+                    BufferedImage filteredImage = DNNSuperResolutionOp.filter(image, null);
+
+                    StringBuilder sb = new StringBuilder(loadPath);
+                    savePath = sb.insert(sb.lastIndexOf("."), "(" + getMode() + ")").toString();
+                    logger.info(savePath);
+
+                    ImageIO.write(filteredImage, "PNG", new File(savePath));
+
+                    prefs.put("Selected Mode", getMode().toString());
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.severe(e.getMessage());
+                    return false;
+                }
+            }
 
             @Override
-            protected void done () {
+            protected void done() {
                 boolean success = false;
                 try {
                     success = get();
@@ -482,41 +519,41 @@ public class MainApp {
                 if (success) {
                     savePath = null;
                     printStopwatch();
-                }        
+                }
             }
         };
     }
 
-    private void printStopwatch () {
+    private void printStopwatch() {
         long minutes = stopwatch.elapsed(TimeUnit.MINUTES);
         long seconds = stopwatch.elapsed(TimeUnit.SECONDS);
         String minutesString = "";
-        if (minutes!=0) {
-            seconds = seconds%60;
-            minutesString = minutes+" ";
-            if (minutes>1)
-                minutesString+="Minutes";
+        if (minutes != 0) {
+            seconds = seconds % 60;
+            minutesString = minutes + " ";
+            if (minutes > 1)
+                minutesString += "Minutes";
             else
-                minutesString+="Minute";
+                minutesString += "Minute";
         }
-        String secondsString="";
+        String secondsString = "";
         if (!minutesString.equals(""))
-            secondsString+=", ";
-        secondsString+=seconds;
+            secondsString += ", ";
+        secondsString += seconds;
         secondsString += " Second";
-        if (seconds!=1)
+        if (seconds != 1)
             secondsString += "s";
         if (seconds > 10 || minutes >= 1)
-            write("Done In " + minutesString + secondsString,null);
+            write("Done In " + minutesString + secondsString, null);
     }
 
-    public static void write (String text, Color color) {
-        StyledDocument doc = window.console.getStyledDocument();
-        Style style = window.console.addStyle("Color Style", null);
+    public void write(String text, Color color) {
+        StyledDocument doc = console.getStyledDocument();
+        Style style = console.addStyle("Color Style", null);
         if (color == null) {
-            color = window.btnLapSRNx8.getForeground();
+            color = btnLapSRNx8.getForeground();
         } else if (color.equals(SVGBLUE))
-            color=new Color(40,164,195);
+            color = new Color(40, 164, 195);
         StyleConstants.setForeground(style, color);
         StyleConstants.setFontFamily(style, "Segoe UI");
         StyleConstants.setFontSize(style, 13);
@@ -524,13 +561,13 @@ public class MainApp {
             int length = doc.getLength();
             doc.insertString(length, " >    " + text + "\n", style);
             doc.setParagraphAttributes(length, 1, style, false);
-            window.console.setCaretPosition(doc.getLength());
+            console.setCaretPosition(doc.getLength());
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
     }
 
-    public void enableComponents (Container container, boolean enable) {
+    public void enableComponents(Container container, boolean enable) {
         Component[] components = container.getComponents();
         for (Component component : components) {
             component.setEnabled(enable);
@@ -540,12 +577,12 @@ public class MainApp {
         }
     }
 
-    public static String[] getMode() {
-        String thisMode = window.mode.getSelection().getActionCommand();
-        for (int i = 0; i < MODES.length; i++)
-            if (thisMode.equals(MODES[i][0]))
-                return MODES[i];
-        return new String[]{"ERROR"};
+    private DNNSuperResolutionOp.Mode getMode() {
+        String thisMode = mode.getSelection().getActionCommand();
+        for (DNNSuperResolutionOp.Mode mode : DNNSuperResolutionOp.MODES)
+            if (thisMode.equals(mode.toString()))
+                return mode;
+        throw new NoSuchElementException(thisMode);
     }
 
     private void setSelected() {
@@ -553,38 +590,46 @@ public class MainApp {
         AbstractButton button;
         while (buttons.hasMoreElements()) {
             button = buttons.nextElement();
-            if (button.getActionCommand().equals(Config.FIELD02.getString()))
+            if (button.getActionCommand().equals(prefs.get("Selected Mode", DNNSuperResolutionOp.MODES[0].toString()))) {
                 button.setSelected(true);
-        }       
-     }
-
-     private void startTabbedPanel () {
-         int index;
-         switch (Config.FIELD02.getString().substring(0, 2)) {
-            case "ES": index = 0; break;
-            case "ED": index = 1; break;
-            case "FS": index = 2; break;
-            default: index = 3;
-         }
-         tabbedPane.setSelectedIndex(index);
-     }
-	  	
-	    private void setSkin (boolean next) {
-            
-	        if (next)
-                Config.FIELD03.setValue(!Config.FIELD03.getBoolean());
-
-	        if (Config.FIELD03.getBoolean()) {
-                com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkHardIJTheme.install();
-                UIManager.put("TabbedPane.selectedBackground", DARK);
+                return;
             }
-            else {
-                com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme.install();
-                UIManager.put("TabbedPane.selectedBackground", LIGHT);
-            }
+        }
+    }
 
-	        if (next)
-                SwingUtilities.updateComponentTreeUI(frame); 
-	    }
-	
+    private void startTabbedPanel() {
+        int index;
+        switch (prefs.get("Selected Mode", DNNSuperResolutionOp.MODES[0].toString()).substring(0, 2)) {
+        case "ES":
+            index = 0;
+            break;
+        case "ED":
+            index = 1;
+            break;
+        case "FS":
+            index = 2;
+            break;
+        default:
+            index = 3;
+        }
+        tabbedPane.setSelectedIndex(index);
+    }
+
+    private void setSkin(boolean next) {
+
+        if (next)
+            prefs.putBoolean("Dark Mode", !prefs.getBoolean("Dark Mode", true));
+
+//	          if (Config.FIELD03.getBoolean()) {
+//                com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkHardIJTheme.install();
+//                UIManager.put("TabbedPane.selectedBackground", DARK);
+//            }
+//            else {
+//                com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme.install();
+//                UIManager.put("TabbedPane.selectedBackground", LIGHT);
+//            }
+
+        if (next)
+            SwingUtilities.updateComponentTreeUI(frame);
+    }
 }
