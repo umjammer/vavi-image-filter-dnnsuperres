@@ -199,7 +199,7 @@ public class MainApp {
         ESPCNpanel.add(separator);
 
         JRadioButton btnESPCNx2 = new JRadioButton("x2");
-        btnESPCNx2.setActionCommand(DNNSuperResolutionOp.MODES[0].toString());
+        btnESPCNx2.setActionCommand(DNNSuperResolutionOp.Mode.MODES[0].toString());
         mode.add(btnESPCNx2);
         btnESPCNx2.setToolTipText("x2");
         ESPCNpanel.add(btnESPCNx2);
@@ -209,7 +209,7 @@ public class MainApp {
         ESPCNpanel.add(s1);
 
         JRadioButton btnESPCNx3 = new JRadioButton("x3");
-        btnESPCNx3.setActionCommand(DNNSuperResolutionOp.MODES[1].toString());
+        btnESPCNx3.setActionCommand(DNNSuperResolutionOp.Mode.MODES[1].toString());
         mode.add(btnESPCNx3);
         btnESPCNx3.setToolTipText("x3");
         ESPCNpanel.add(btnESPCNx3);
@@ -219,7 +219,7 @@ public class MainApp {
         ESPCNpanel.add(s2);
 
         JRadioButton btnESPCNx4 = new JRadioButton("x4");
-        btnESPCNx4.setActionCommand(DNNSuperResolutionOp.MODES[2].toString());
+        btnESPCNx4.setActionCommand(DNNSuperResolutionOp.Mode.MODES[2].toString());
         mode.add(btnESPCNx4);
         btnESPCNx4.setToolTipText("x4");
         ESPCNpanel.add(btnESPCNx4);
@@ -236,7 +236,7 @@ public class MainApp {
         EDSRpanel.add(s4);
 
         JRadioButton btnEDSRx2 = new JRadioButton("x2");
-        btnEDSRx2.setActionCommand(DNNSuperResolutionOp.MODES[3].toString());
+        btnEDSRx2.setActionCommand(DNNSuperResolutionOp.Mode.MODES[3].toString());
         mode.add(btnEDSRx2);
         btnEDSRx2.setToolTipText("x2");
         btnEDSRx2.setHorizontalAlignment(SwingConstants.CENTER);
@@ -246,7 +246,7 @@ public class MainApp {
         EDSRpanel.add(s5);
 
         JRadioButton btnEDSRx3 = new JRadioButton("x3");
-        btnEDSRx3.setActionCommand(DNNSuperResolutionOp.MODES[4].toString());
+        btnEDSRx3.setActionCommand(DNNSuperResolutionOp.Mode.MODES[4].toString());
         mode.add(btnEDSRx3);
         btnEDSRx3.setToolTipText("x3");
         btnEDSRx3.setHorizontalAlignment(SwingConstants.CENTER);
@@ -256,7 +256,7 @@ public class MainApp {
         EDSRpanel.add(s6);
 
         JRadioButton btnEDSRx4 = new JRadioButton("x4");
-        btnEDSRx4.setActionCommand(DNNSuperResolutionOp.MODES[5].toString());
+        btnEDSRx4.setActionCommand(DNNSuperResolutionOp.Mode.MODES[5].toString());
         mode.add(btnEDSRx4);
         btnEDSRx4.setToolTipText("x4");
         btnEDSRx4.setHorizontalAlignment(SwingConstants.CENTER);
@@ -273,7 +273,7 @@ public class MainApp {
         FSRCNNpanel.add(s8);
 
         JRadioButton btnFSRCNNx2 = new JRadioButton("x2");
-        btnFSRCNNx2.setActionCommand(DNNSuperResolutionOp.MODES[6].toString());
+        btnFSRCNNx2.setActionCommand(DNNSuperResolutionOp.Mode.MODES[6].toString());
         mode.add(btnFSRCNNx2);
         btnFSRCNNx2.setToolTipText("x2");
         btnFSRCNNx2.setHorizontalAlignment(SwingConstants.CENTER);
@@ -283,7 +283,7 @@ public class MainApp {
         FSRCNNpanel.add(s9);
 
         JRadioButton btnFSRCNNx3 = new JRadioButton("x3");
-        btnFSRCNNx3.setActionCommand(DNNSuperResolutionOp.MODES[7].toString());
+        btnFSRCNNx3.setActionCommand(DNNSuperResolutionOp.Mode.MODES[7].toString());
         mode.add(btnFSRCNNx3);
         btnFSRCNNx3.setToolTipText("x3");
         btnFSRCNNx3.setHorizontalAlignment(SwingConstants.CENTER);
@@ -293,7 +293,7 @@ public class MainApp {
         FSRCNNpanel.add(s10);
 
         JRadioButton btnFSRCNNx4 = new JRadioButton("x4");
-        btnFSRCNNx4.setActionCommand(DNNSuperResolutionOp.MODES[8].toString());
+        btnFSRCNNx4.setActionCommand(DNNSuperResolutionOp.Mode.MODES[8].toString());
         mode.add(btnFSRCNNx4);
         btnFSRCNNx4.setVerticalAlignment(SwingConstants.TOP);
         btnFSRCNNx4.setToolTipText("x4");
@@ -311,7 +311,7 @@ public class MainApp {
         LapSRNpanel.add(s12);
 
         JRadioButton btnLapSRNx2 = new JRadioButton("x2");
-        btnLapSRNx2.setActionCommand(DNNSuperResolutionOp.MODES[9].toString());
+        btnLapSRNx2.setActionCommand(DNNSuperResolutionOp.Mode.MODES[9].toString());
         mode.add(btnLapSRNx2);
         btnLapSRNx2.setToolTipText("x2");
         btnLapSRNx2.setHorizontalAlignment(SwingConstants.CENTER);
@@ -321,7 +321,7 @@ public class MainApp {
         LapSRNpanel.add(s13);
 
         JRadioButton btnLapSRNx4 = new JRadioButton("x4");
-        btnLapSRNx4.setActionCommand(DNNSuperResolutionOp.MODES[10].toString());
+        btnLapSRNx4.setActionCommand(DNNSuperResolutionOp.Mode.MODES[10].toString());
         mode.add(btnLapSRNx4);
         btnLapSRNx4.setToolTipText("x4");
         btnLapSRNx4.setHorizontalAlignment(SwingConstants.CENTER);
@@ -331,7 +331,7 @@ public class MainApp {
         LapSRNpanel.add(s14);
 
         btnLapSRNx8 = new JRadioButton("x8");
-        btnLapSRNx8.setActionCommand(DNNSuperResolutionOp.MODES[11].toString());
+        btnLapSRNx8.setActionCommand(DNNSuperResolutionOp.Mode.MODES[11].toString());
         mode.add(btnLapSRNx8);
         btnLapSRNx8.setVerticalAlignment(SwingConstants.TOP);
         btnLapSRNx8.setToolTipText("x8");
@@ -433,13 +433,13 @@ public class MainApp {
     void save() {
         PointerBuffer path = MemoryUtil.memAllocPointer(1);
         String openPath = loadPath != null ? loadPath : prefs.get("Selected Directory", System.getProperty("user.home"));
-        switch (NativeFileDialog.NFD_SaveDialog("png", openPath, path)) {
+        switch (NativeFileDialog.NFD_SaveDialog(path, null, openPath, null)) {
         case NativeFileDialog.NFD_OKAY:
             savePath = path.getStringUTF8(0);
             if (!savePath.endsWith(".png"))
                 savePath += ".png";
             write("Saving to " + savePath, null);
-            NativeFileDialog.nNFD_Free(path.get(0));
+            NativeFileDialog.NFD_FreePath(path.get(0));
             saveButton.setIcon(saveOkSVG);
             break;
         case NativeFileDialog.NFD_CANCEL:
@@ -461,12 +461,13 @@ public class MainApp {
 
     void load() {
         PointerBuffer path = MemoryUtil.memAllocPointer(1);
-        switch (NativeFileDialog.NFD_OpenDialog("png", prefs.get("Selected Directory", System.getProperty("user.home")), path)) {
+        String savePath = prefs.get("Selected Directory", System.getProperty("user.home"));
+        switch (NativeFileDialog.NFD_OpenDialog(path, null, savePath)) {
         case NativeFileDialog.NFD_OKAY:
             loadPath = path.getStringUTF8(0);
             prefs.put("Selected Directory", new File(loadPath).getParent());
             write("Loaded " + loadPath, null);
-            NativeFileDialog.nNFD_Free(path.get(0));
+            NativeFileDialog.NFD_FreePath(path.get(0));
             loadButton.setIcon(loadOkSVG);
             break;
         case NativeFileDialog.NFD_CANCEL:
@@ -579,7 +580,7 @@ public class MainApp {
 
     private DNNSuperResolutionOp.Mode getMode() {
         String thisMode = mode.getSelection().getActionCommand();
-        for (DNNSuperResolutionOp.Mode mode : DNNSuperResolutionOp.MODES)
+        for (DNNSuperResolutionOp.Mode mode : DNNSuperResolutionOp.Mode.MODES)
             if (thisMode.equals(mode.toString()))
                 return mode;
         throw new NoSuchElementException(thisMode);
@@ -590,7 +591,7 @@ public class MainApp {
         AbstractButton button;
         while (buttons.hasMoreElements()) {
             button = buttons.nextElement();
-            if (button.getActionCommand().equals(prefs.get("Selected Mode", DNNSuperResolutionOp.MODES[0].toString()))) {
+            if (button.getActionCommand().equals(prefs.get("Selected Mode", DNNSuperResolutionOp.Mode.MODES[0].toString()))) {
                 button.setSelected(true);
                 return;
             }
@@ -599,7 +600,7 @@ public class MainApp {
 
     private void startTabbedPanel() {
         int index;
-        switch (prefs.get("Selected Mode", DNNSuperResolutionOp.MODES[0].toString()).substring(0, 2)) {
+        switch (prefs.get("Selected Mode", DNNSuperResolutionOp.Mode.MODES[0].toString()).substring(0, 2)) {
         case "ES":
             index = 0;
             break;

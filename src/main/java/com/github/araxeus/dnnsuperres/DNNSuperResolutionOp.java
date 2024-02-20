@@ -21,10 +21,12 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -78,6 +80,26 @@ public class DNNSuperResolutionOp implements BufferedImageOp {
 
     /** algorithm and scale */
     public static class Mode {
+        /** available models */
+        public static final Mode[] MODES = {
+                new Mode(DNNSuperResolutionOp.Algorithm.ES, 2),
+                new Mode(DNNSuperResolutionOp.Algorithm.ES, 3),
+                new Mode(DNNSuperResolutionOp.Algorithm.ES, 4),
+                new Mode(DNNSuperResolutionOp.Algorithm.ED, 2),
+                new Mode(DNNSuperResolutionOp.Algorithm.ED, 3),
+                new Mode(DNNSuperResolutionOp.Algorithm.ED, 4),
+                new Mode(DNNSuperResolutionOp.Algorithm.FS, 2),
+                new Mode(DNNSuperResolutionOp.Algorithm.FS, 3),
+                new Mode(DNNSuperResolutionOp.Algorithm.FS, 4),
+                new Mode(DNNSuperResolutionOp.Algorithm.LA, 2),
+                new Mode(DNNSuperResolutionOp.Algorithm.LA, 4),
+                new Mode(DNNSuperResolutionOp.Algorithm.LA, 8)
+        };
+
+        public static Mode of(Algorithm algorithm, int scale) {
+            return Arrays.stream(MODES).filter(m -> m.algorithm == algorithm && m.scale == scale).findFirst().orElseThrow(NoSuchElementException::new);
+        }
+
         public DNNSuperResolutionOp.Algorithm algorithm;
         public int scale;
 
@@ -91,22 +113,6 @@ public class DNNSuperResolutionOp implements BufferedImageOp {
             return algorithm.name + "x" + scale;
         }
     }
-
-    /** available models */
-    public static final Mode[] MODES = {
-            new Mode(DNNSuperResolutionOp.Algorithm.ES, 2),
-            new Mode(DNNSuperResolutionOp.Algorithm.ES, 3),
-            new Mode(DNNSuperResolutionOp.Algorithm.ES, 4),
-            new Mode(DNNSuperResolutionOp.Algorithm.ED, 2),
-            new Mode(DNNSuperResolutionOp.Algorithm.ED, 3),
-            new Mode(DNNSuperResolutionOp.Algorithm.ED, 4),
-            new Mode(DNNSuperResolutionOp.Algorithm.FS, 2),
-            new Mode(DNNSuperResolutionOp.Algorithm.FS, 3),
-            new Mode(DNNSuperResolutionOp.Algorithm.FS, 4),
-            new Mode(DNNSuperResolutionOp.Algorithm.LA, 2),
-            new Mode(DNNSuperResolutionOp.Algorithm.LA, 4),
-            new Mode(DNNSuperResolutionOp.Algorithm.LA, 8)
-    };
 
     /** opencv cannot deal files in jar */
     private static Path modelDir;
@@ -226,7 +232,7 @@ logger.finer("Started DNNSuperResolutionOp Process [" + mode + "]");
         width *= mode.scale;
         height *= mode.scale;
         if (width > 6666 || height > 6666) {
-            throw new IllegalArgumentException("ERROR: Expected output has a side thats bigger than 6666 pixels");
+            throw new IllegalArgumentException("ERROR: Expected output has a side that's bigger than 6666 pixels");
         }
 
         try (Mat imageNew = new Mat();

@@ -14,6 +14,8 @@ import javax.imageio.ImageIO;
 import com.github.araxeus.dnnsuperres.DNNSuperResolutionOp;
 import org.junit.jupiter.api.Test;
 import vavi.util.Debug;
+import vavi.util.properties.annotation.Property;
+import vavi.util.properties.annotation.PropsEntity;
 
 
 /**
@@ -22,23 +24,33 @@ import vavi.util.Debug;
  * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
  * @version 0.00 2022-10-14 nsano initial version <br>
  */
+@PropsEntity(url = "file:local.properties")
 public class Test1 {
+
+    static boolean localPropertiesExists() {
+        return Files.exists(Paths.get("local.properties"));
+    }
+
+    @Property
+    String file = "src/test/resources/samples/input.png";
 
     public static void main(String[] args) throws Exception {
         Test1 app = new Test1();
+        if (localPropertiesExists()) {
+            PropsEntity.Util.bind(app);
+        }
         app.test();
     }
 
     @Test
     void test() throws Exception {
 
-        Path in = Paths.get("src/test/resources/samples/input.png");
-//        Path in = Paths.get("/Users/nsano/src/vavi/vavi-image-dlfilter/tmp/v01_031.jpg");
+        Path in = Paths.get(file);
         String fn = in.getFileName().toString();
         String base = fn.substring(0, fn.lastIndexOf('.'));
         String ext = fn.substring(fn.lastIndexOf('.'));
 
-        for (DNNSuperResolutionOp.Mode mode : DNNSuperResolutionOp.MODES) {
+        for (DNNSuperResolutionOp.Mode mode : DNNSuperResolutionOp.Mode.MODES) {
             DNNSuperResolutionOp filter = new DNNSuperResolutionOp(mode);
 
             BufferedImage image = ImageIO.read(Files.newInputStream(in));
