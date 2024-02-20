@@ -1,11 +1,11 @@
-[![Maven Package](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/maven-publish.yml)
+[![Release](https://jitpack.io/v/umjammer/vavi-image-filter-dnnsuperres.svg)](https://jitpack.io/#umjammer/vavi-image-filter-dnnsuperres)
 [![Java CI](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/maven.yml/badge.svg)](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/maven.yml)
 [![CodeQL](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/umjammer/vavi-image-filter-dnnsuperres/actions/workflows/codeql-analysis.yml)
-![Java](https://img.shields.io/badge/Java-8-b07219)
+![Java](https://img.shields.io/badge/Java-17-b07219)
 
 # vavi-image-filter-dnnsuperres
 
-<img src="https://raw.githubusercontent.com/wiki/opencv/opencv/logo/OpenCV_logo_black.svg?sanitize=true" />
+<img src="https://raw.githubusercontent.com/wiki/opencv/opencv/logo/OpenCV_logo_black.svg?sanitize=true" /><sub><a href="https://opencv.org/">© OpenCV</a></sub>
 
 [BufferedImageOp](https://docs.oracle.com/javase/8/docs/api/java/awt/image/BufferedImageOp.html)
 using pretrained models to OpenCV's DNNSuperRes
@@ -14,9 +14,7 @@ this is a fork of https://github.com/Araxeus/PNG-Upscale
 
 ## Install
 
-* https://github.com/umjammer/vavi-image-filter-dnnsuperres/packages
-* this project uses github packages. add a personal access token to `~/.m2/settings.xml`
-* see https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry
+* [maven](https://jitpack.io/#umjammer/vavi-image-filter-dnnsuperres)
 
 ```shell
  $ mvn -P lwjgl-natives-macos-amd64 -Djavacpp.platform=macosx-x86_64 install
