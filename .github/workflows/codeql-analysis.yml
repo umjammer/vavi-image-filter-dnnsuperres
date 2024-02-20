@@ -66,7 +66,7 @@ jobs:
     #    uses a compiled language
 
     - name: Build with Maven
-      run: mvn -B -P lwjgl-natives-macos-amd64 -Djavacpp.platform=macosx-x86_64 install --file pom.xml -s $GITHUB_WORKSPACE/settings.xml
+      run: mvn -B -P lwjgl-natives-macos-amd64 -Djavacpp.platform=macosx-amd64 install --file pom.xml -s $GITHUB_WORKSPACE/settings.xml -Dmaven.test.skip=true
       env:
         GITHUB_TOKEN: ${{ github.token }}
 

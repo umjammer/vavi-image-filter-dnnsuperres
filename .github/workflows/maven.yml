@@ -32,6 +32,6 @@ jobs:
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
       - name: Build with Maven
-        run: mvn -B -P lwjgl-natives-macos-amd64 -Djavacpp.platform=macosx-x86_64 package --file pom.xml -s $GITHUB_WORKSPACE/settings.xml
+        run: mvn -B -P lwjgl-natives-macos-amd64 -Djavacpp.platform=macosx-amd64 package --file pom.xml -s $GITHUB_WORKSPACE/settings.xml
         env:
           GITHUB_TOKEN: ${{ github.token }}
